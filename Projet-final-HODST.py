@@ -324,15 +324,15 @@ print(cost_of_living_index.shape)
 df_merge = df_world_happiness_report.merge(
     cost_of_living_index,how='inner',on='Country_Name'
 )
-
+france=df_merge.loc[df_merge["Country_Name"]=="France"]
 df_merge_for_visa = pd.concat([df_evisa_country_for_french,df_visa_free_country_for_french,df_visa_on_arrival_country_for_french,df_visa_requirement_country_for_french])
 df_merge_for_visa=df_merge_for_visa.drop_duplicates(keep='first',subset='Country_Name')
-
 
 # Enfin on merge toute ces dataframe ensemble 
 df_all = df_merge.merge(
     df_merge_for_visa,how='inner',on='Country_Name'
 )
+df_all=pd.concat([france,df_all])
 print(df_all)
 
 
@@ -374,5 +374,15 @@ def get_distance_and_duration_from_france_to_eu_country(pays_ue):
                 print(data['duration']['text'])
 
 get_distance_and_duration_from_france_to_eu_country(List_pays_ue)
+
+df_all=df_all[['Country_Name', 'Regional indicator', 'Ladder score',
+               'Social support', 'Healthy life expectancy',
+       'Freedom to make life choices', 'Generosity',
+       'Perceptions of corruption', 
+        'cost of living index',
+       'cost of living plus rent index', 'Groceries index',
+       'restaurant price index', 'local purchasing power index',
+       'time_available_on_site', 'required visa for french citizen']]
+df_all.columns=df_all.columns.str.replace(" ", "_")
 
 df_all.to_csv(sep=';',path_or_buf='dataframe-expat-final.csv',index=True,index_label=True,encoding='latin',decimal=',')
